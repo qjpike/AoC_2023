@@ -5,7 +5,6 @@ def get_input():
         return f.readlines()
 
 
-
 numbers = '0123456789'
 
 inp = get_input()
@@ -38,6 +37,9 @@ for i in inp:
                     if first == -1:
                         first = strs.index(k) + 1
                     last = strs.index(k) + 1
+                    
     sum2 += first * 10 + last
 
 print("2:", sum2)
+
+
