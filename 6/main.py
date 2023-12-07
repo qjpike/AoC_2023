@@ -21,10 +21,7 @@ def main():
 
         count = 0
         for j in range(t + 1):
-            speed = j
-            dist = (t - j) * j
-
-            if dist > d:
+            if (t - j) * j > d:
                 count += 1
         
         total *= count
@@ -32,16 +29,10 @@ def main():
 
     count = 0
     for i in range(61709067):
-        speed = i
-        dist = (61709066 - i) * i
-
-        if dist > 643118413621041:
+        if (61709066 - i) * i > 643118413621041:
             count += 1
 
     print("2:", count)
-
-    
-    return
 
 if __name__ == "__main__":
     main()
