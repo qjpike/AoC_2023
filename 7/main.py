@@ -2,11 +2,14 @@ ranking = '23456789TJQKA'
 ranking2 = 'J23456789TQKA'
 
 class Character:
-    def __init__(self, a):
+    def __init__(self, a, part2 = False):
         self.chr = a
-
+        if part2:
+            self.ranking = ranking2
+        else:
+            self.ranking = ranking
     def __lt__(self, other):
-        return ranking.index(other.chr) < ranking.index(self.chr)
+        return other.ranking.index(other.chr) < self.ranking.index(self.chr)
 
     def __str__(self):
         return str(self.chr)
@@ -17,37 +20,27 @@ class Character:
     def __hash__(self):
         return hash(self.chr)
     
-
-class Character2:
-    def __init__(self, a):
-        self.chr = a
-
-    def __lt__(self, other):
-        return ranking2.index(other.chr) < ranking2.index(self.chr)
-
-    def __str__(self):
-        return str(self.chr)
-
-    def __eq__(self, other):
-        return self.chr == other.chr
-    
-    def __hash__(self):
-        return hash(self.chr)
-
 class Hand:
-    def __init__(self, cards, bid):
+    def __init__(self, cards, bid, part2=False):
         self.cards = cards
         self.bid = int(bid)
 
         self.value = -1
-        s = set(cards)    
+        
+        if not part2:
+            self.set_value_1()
+        else:
+            self.set_value_2()
+
+    def set_value_1(self):
+        s = set(self.cards)    
         if len(s) == 1:
             self.value = 6
         elif len(s) == 2:
             self.value = 4 # Full House
 
             for i in list(s):
-                if cards.count(i) == 4:
+                if self.cards.count(i) == 4:
                     self.value = 5 # 4 of a kind
                     break
             
@@ -55,7 +48,7 @@ class Hand:
             self.value = 2 # two pair
 
             for i in list(s):
-                if cards.count(i) == 3:
+                if self.cards.count(i) == 3:
                     self.value = 3 # three of a kind
                     break
             
@@ -63,36 +56,10 @@ class Hand:
             self.value = 1 # one pair
         else:
             self.value = 0
-
-    def __str__(self):
-        string = ''
-        for i in self.cards:
-            string += str(i)
-        return string + ' ' + str(self.bid) + ' ' + str(self.value)
-
-    def __lt__(self, other):
-        if other.value > self.value:
-            return False
-        elif other.value < self.value:
-            return True
-        else:
-            for i, character in enumerate(other.cards):
-                if character < self.cards[i]:
-                    return False
-                elif character > self.cards[i]:
-                    return True
-                
-        print("fuck")
-
-class Hand2:
-    def __init__(self, cards, bid):
-        self.cards = cards
-        self.bid = int(bid)
-
-        wilds = cards.count(Character2('J'))
-        self.value = -1
         
-        s = set(cards)    
+    def set_value_2(self):
+        wilds = self.cards.count(Character('J'))
+        s = set(self.cards)    
         if len(s) == 1:
             self.value = 6 #five of a kind
         elif len(s) == 2:
@@ -102,7 +69,7 @@ class Hand2:
 
             max_count = 0
             for i in list(s):
-                max_count = max(max_count, cards.count(i))
+                max_count = max(max_count, self.cards.count(i))
             
             if max_count == 4:
                 self.value = 5 # 4 of a kind
@@ -113,7 +80,7 @@ class Hand2:
         elif len(s) == 3:
             max_count = 0
             for i in list(s):
-                max_count = max(max_count, cards.count(i))
+                max_count = max(max_count, self.cards.count(i))
             
             if max_count == 3:
                 if wilds == 3:
@@ -165,6 +132,7 @@ class Hand2:
                 
         print("fuck")
 
+
 def get_input():
     inp = []
     with open("input.txt") as f:
@@ -175,7 +143,6 @@ def get_input():
 
 
 def main():
-# Solution goes here
 
     inp = get_input()
 
@@ -195,19 +162,17 @@ def main():
     
     hands = []
     for hand in inp:
-        a = [Character2(i) for i in hand.split()[0]]
+        a = [Character(i, True) for i in hand.split()[0]]
 
-        hands.append(Hand2(a, hand.split()[1]))
+        hands.append(Hand(a, hand.split()[1], True))
     
     hands.sort(reverse=True)
 
     total = 0
     for idx, hand in enumerate(hands):
         total += (idx + 1) * hand.bid
-        print(hand)
-    print(total) # 250544761 too low
-
-    return
+        
+    print("2:", total)
 
 if __name__ == "__main__":
     main()
